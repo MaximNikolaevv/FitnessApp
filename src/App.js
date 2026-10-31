@@ -1,9 +1,21 @@
-import { Text, View } from "react-native";
+import { ImageBackground } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+import { Platform, StyleSheet } from "react-native";
 
-export default function App() {
+export default function HomePage() {
   return (
-    <View>
-      <Text>Open up App.js to start working on your app!</Text>
-    </View>
+    <>
+      <StatusBar hidden={Platform.OS === "android"} />
+
+      <ImageBackground
+        source={require("../img/HomePage.jpg")}
+        contentFit="cover"
+        style={styles.background}
+      />
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  background: { flex: 1 },
+});
