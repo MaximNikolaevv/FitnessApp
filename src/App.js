@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
+import { NavigationBar } from "expo-navigation-bar";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import { Oswald_600SemiBold } from "@expo-google-fonts/oswald";
@@ -8,6 +8,7 @@ import {
   OpenSans_600SemiBold,
 } from "@expo-google-fonts/open-sans";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { useEffect,  } from "react";
 
 export default function HomePage() {
   const [fontsLoaded] = useFonts({
@@ -15,6 +16,12 @@ export default function HomePage() {
     OpenSans_400Regular,
     OpenSans_600SemiBold,
   });
+
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      NavigationBar.setHidden(true); // hides the navigation tools on android
+    }
+  }, []);
 
   if (!fontsLoaded) return null;
 
