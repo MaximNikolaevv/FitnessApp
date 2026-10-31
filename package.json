@@ -19,14 +19,19 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "lint": "expo lint"
   },
   "engines": {
     "node": "^22.13.0 || ^24.3.0 || >=26.0.0"
   },
   "dependencies": {
+    "@expo-google-fonts/open-sans": "^0.4.2",
+    "@expo-google-fonts/oswald": "^0.4.2",
     "expo": "~58.0.21",
+    "expo-font": "~58.0.11",
     "expo-image": "~58.0.18",
+    "expo-linear-gradient": "~58.0.3",
     "expo-status-bar": "~58.0.4",
     "react": "19.3.0",
     "react-native": "0.88.1"
