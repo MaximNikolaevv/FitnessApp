@@ -22,7 +22,9 @@
     },
     "plugins": [
       "expo-image",
-      "expo-font"
+      "expo-font",
+      "expo-router",
+      "expo-status-bar"
     ]
   }
 }
