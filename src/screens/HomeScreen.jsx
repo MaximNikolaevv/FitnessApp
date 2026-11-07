@@ -146,11 +146,11 @@ const styles = StyleSheet.create({
     borderWidth: 2.5,
     borderColor: "rgba(217,143,107,0.55)",
     backgroundColor: "rgba(23,15,12,0.6)",
-    paddingTop: 5
+    paddingBottom: 8
     
   },
   secondaryText: {
-    fontFamily: "OpenSans_600SemiBold",
+    fontFamily: "Oswald_600SemiBold",
     fontSize: 18,
     color: "#fff",
     textAlign: "center",
