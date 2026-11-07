@@ -7,16 +7,23 @@ const BG = "#170f0c";
 export default function WorkoutScreen() {
   return (
     <View style={styles.root}>
+      {/* Background image */}
       <Image
         source={require("../../img/Workout.jpg")}
         contentFit="cover"
         style={StyleSheet.absoluteFill}
       />
 
-      {/* лек тъмен слой, най-тъмен долу, за да се чете лентата */}
+      {/* Dark warm overlay */}
       <LinearGradient
-        colors={["rgba(23,15,12,0.25)", "rgba(23,15,12,0.10)", "rgba(23,15,12,0.80)"]}
-        locations={[0, 0.5, 1]}
+        colors={[
+          "rgba(23,15,12,0.30)",
+          "rgba(23,15,12,0.20)",
+          "rgba(23,15,12,0.40)",
+          "rgba(23,15,12,0.82)",
+          BG,
+        ]}
+        locations={[0, 0.35, 0.58, 0.85, 1]}
         style={StyleSheet.absoluteFill}
       />
     </View>
@@ -24,5 +31,8 @@ export default function WorkoutScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: BG },
+  root: {
+    flex: 1,
+    backgroundColor: BG,
+  },
 });
