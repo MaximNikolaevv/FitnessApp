@@ -12,6 +12,7 @@ import {
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "@react-navigation/native";
+import { useUserContext } from "../context/context";
 
 const ACCENT = "#d98f6b";
 const TRUE = "rgba(255,255,255,0.14)";
@@ -55,9 +56,8 @@ export default function RegisterScreen({ navigation }) {
   };
 
   const handleGuest = () => {
-    // TODO: когато екранът за гости е готов, замени с:
-    // navigation.reset({ index: 0, routes: [{ name: "GuestWorkout", params: { guest: true } }] });
-    console.log("Train as a guest user");
+   
+    navigation.navigate("MainTabs", { screen: "Workout" });
   };
 
   return (
