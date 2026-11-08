@@ -27,6 +27,7 @@ export default function RegisterScreen({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const { setIsGuest } = useUserContext();
 
   const validate = () => {
     const next = {};
@@ -56,7 +57,7 @@ export default function RegisterScreen({ navigation }) {
   };
 
   const handleGuest = () => {
-   
+    setIsGuest(true);
     navigation.navigate("MainTabs", { screen: "Workout" });
   };
 
@@ -174,9 +175,7 @@ export default function RegisterScreen({ navigation }) {
                   onPress={() => setShowPassword((prev) => !prev)}
                   hitSlop={10}
                 >
-                  <Text style={styles.icon}>
-                    {showPassword ? "⊘" : "◉"}
-                  </Text>
+                  <Text style={styles.icon}>{showPassword ? "⊘" : "◉"}</Text>
                 </Pressable>
               </View>
 
@@ -218,9 +217,7 @@ export default function RegisterScreen({ navigation }) {
 
             {/* Footer */}
             <View style={styles.footer}>
-              <Text style={styles.footerText}>
-                Already have an account?
-              </Text>
+              <Text style={styles.footerText}>Already have an account?</Text>
 
               <Link screen="Login" style={styles.footerLink}>
                 Log in
