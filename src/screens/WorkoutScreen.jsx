@@ -7,14 +7,12 @@ const BG = "#170f0c";
 export default function WorkoutScreen() {
   return (
     <View style={styles.root}>
-      {/* Background image */}
       <Image
         source={require("../../img/Workout.jpg")}
         contentFit="cover"
         style={StyleSheet.absoluteFill}
       />
 
-      {/* Dark warm overlay */}
       <LinearGradient
         colors={[
           "rgba(23,15,12,0.30)",
