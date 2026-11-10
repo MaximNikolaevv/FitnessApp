@@ -1,12 +1,10 @@
-import { useUserContext } from "../context/context";
+
 import { Modal, StyleSheet, View } from "react-native";
-import { useState } from "react";
+
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 
 export default function ProfileScreen() {
-  const { isGuest } = useUserContext();
-  const [modalVisible, setModalVisible] = useState(true);
   const BG = "#170f0c";
 
   return (

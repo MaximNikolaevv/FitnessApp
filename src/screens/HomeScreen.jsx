@@ -11,7 +11,7 @@ import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { useEffect } from "react";
 import { Link } from "@react-navigation/native";
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({  }) {
   const [fontsLoaded] = useFonts({
     Oswald_600SemiBold,
     OpenSans_400Regular,
