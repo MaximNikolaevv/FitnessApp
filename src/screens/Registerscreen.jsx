@@ -13,6 +13,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "@react-navigation/native";
 import { useUserContext } from "../context/context";
+import { saveData } from "../utils/storage";
 
 const ACCENT = "#d98f6b";
 const TRUE = "rgba(255,255,255,0.14)";
@@ -56,8 +57,9 @@ export default function RegisterScreen({ navigation }) {
     // }
   };
 
-  const handleGuest = () => {
+  const handleGuest = async () => {
     setIsGuest(true);
+    await saveData("isGuest", "true");
     navigation.navigate("MainTabs", { screen: "Workout" });
   };
 
