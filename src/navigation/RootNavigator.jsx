@@ -67,10 +67,13 @@ export function MainTabs() {
           name="CreateWorkout"
           component={CreateWorkoutScreen}
           options={{
-            tabBarLabel: "Create",
             tabBarLabel: () => (
               <Text
-                style={{ color: isGuest ? "#441704" : "#887b75", fontSize: 12, fontWeight: "600" }}
+                style={{
+                  color: isGuest ? "#441704" : "#887b75",
+                  fontSize: 12,
+                  fontWeight: "600",
+                }}
               >
                 Create
               </Text>
@@ -107,14 +110,32 @@ export function MainTabs() {
           name="Profile"
           component={ProfileScreen}
           options={{
-            tabBarInactiveTintColor: isGuest ? "#441704" : "#887b75",
-            tabBarIcon: ({ color }) => (
+            tabBarLabel: () => (
+              <Text
+                style={{
+                  color: isGuest ? "#441704" : "#887b75",
+                  fontSize: 12,
+                  fontWeight: "600",
+                }}
+              >
+                Profile
+              </Text>
+            ),
+            tabBarIcon: ({}) => (
               <Ionicons
                 name="person-outline"
-                size={23}
+                size={24}
                 color={isGuest ? "#441704" : "#887b75"}
               />
             ),
+          }}
+          listeners={{
+            tabPress: (e) => {
+              if (isGuest) {
+                e.preventDefault();
+                setModalVisible(true);
+              }
+            },
           }}
         />
       </Tab.Navigator>
