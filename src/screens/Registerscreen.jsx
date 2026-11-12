@@ -13,7 +13,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "@react-navigation/native";
 import { useUserContext } from "../context/context";
-import { saveData } from "../utils/storage";
+import { saveData } from "../storage/storage";
 
 const ACCENT = "#d98f6b";
 const TRUE = "rgba(255,255,255,0.14)";
