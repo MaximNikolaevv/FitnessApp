@@ -7,3 +7,11 @@ export async function getAll() {
 
   return response.data;
 }
+
+export async function getById(workoutId) {
+  const response = await api.get(`/workouts?id=eq.${workoutId}`);
+
+  const result = response.data;
+
+  return result[0];
+}
