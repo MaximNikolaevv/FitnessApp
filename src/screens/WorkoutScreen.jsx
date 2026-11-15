@@ -126,11 +126,6 @@ export default function WorkoutScreen({ navigation }) {
     setRefreshing(false);
   };
 
-  const handleOpen = (workout) => {
-    // TODO: navigation.navigate("ActiveWorkout", { workout });
-    console.log("Open workout", workout.id);
-  };
-
   return (
     <View style={styles.root}>
       <Image
@@ -155,7 +150,12 @@ export default function WorkoutScreen({ navigation }) {
         data={workouts}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
-          <WorkoutCard item={item} onPress={() => handleOpen(item)} />
+          <WorkoutCard
+            item={item}
+            onPress={() =>
+              navigation.navigate("WorkoutDetails", { workoutId: item.id })
+            }
+          />
         )}
         refreshControl={
           <RefreshControl
