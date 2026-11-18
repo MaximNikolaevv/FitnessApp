@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -21,6 +22,7 @@ import {
   OpenSans_600SemiBold,
 } from "@expo-google-fonts/open-sans";
 import { Link } from "@react-navigation/native";
+import { authApi } from "../backend";
 const ACCENT = "#d98f6b";
 const MUTED = "#9c8a80";
 const DANGER = "#ff6b6b";
@@ -58,7 +60,10 @@ export default function LoginScreen({ navigation }) {
     if (!validate()) return;
     try {
       setLoading(true);
-      // TODO: заявка към сървъра
+      await authApi.loginUser(email.trim(), password);
+      navigation.navigate("MainTabs", { screen: "Workout" });
+    } catch (error) {
+      Alert.alert("Login failed", error.message);
     } finally {
       setLoading(false);
     }
