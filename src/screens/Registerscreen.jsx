@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -12,8 +13,7 @@ import {
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "@react-navigation/native";
-import { useUserContext } from "../context/context";
-import { saveData } from "../storage/storage";
+import { authApi } from "../backend";
 
 const ACCENT = "#d98f6b";
 const TRUE = "rgba(255,255,255,0.14)";
@@ -23,15 +23,21 @@ const ERROR = "#ff8a7a";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function RegisterScreen({ navigation }) {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const { setIsGuest } = useUserContext();
+
 
   const validate = () => {
     const next = {};
+
+    if (name.trim().length < 2) {
+      next.name = "Enter your name";
+    }
 
     if (!EMAIL_RE.test(email.trim())) {
       next.email = "Enter a valid email";
@@ -41,6 +47,10 @@ export default function RegisterScreen({ navigation }) {
       next.password = "At least 8 characters";
     }
 
+    if (confirmPassword !== password) {
+      next.confirmPassword = "Passwords do not match";
+    }
+
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -48,18 +58,30 @@ export default function RegisterScreen({ navigation }) {
   const handleRegister = async () => {
     if (!validate()) return;
 
-    // try {
-    //   setLoading(true);
-    //   // TODO: заявка към сървъра
-    //   console.log("Register", { email: email.trim() });
-    // } finally {
-    //   setLoading(false);
-    // }
+    try {
+      setLoading(true);
+      const session = await authApi.registerUser(
+        email.trim(),
+        password,
+        name.trim(),
+      );
+      if (session) {
+        navigation.navigate("MainTabs", { screen: "Workout" });
+      } else {
+        Alert.alert(
+          "Confirm your email",
+          "Check your email to confirm your account, then log in.",
+          [{ text: "OK", onPress: () => navigation.navigate("Login") }],
+        );
+      }
+    } catch (error) {
+      Alert.alert("Registration failed", error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleGuest = async () => {
-    setIsGuest(true);
-    await saveData("isGuest", "true");
+  const handleGuest = () => {
     navigation.navigate("MainTabs", { screen: "Workout" });
   };
 
@@ -113,6 +135,29 @@ export default function RegisterScreen({ navigation }) {
 
           {/* Form */}
           <View style={styles.form}>
+            {/* Name */}
+            <View style={styles.field}>
+              <Text style={styles.label}>NAME</Text>
+
+              <View style={styles.inputWrap}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Your name"
+                  placeholderTextColor="#7d6d65"
+                  autoCapitalize="words"
+                  value={name}
+                  onChangeText={(text) => {
+                    setName(text);
+                   
+                  }}
+                />
+              </View>
+
+              {errors.name ? (
+                <Text style={styles.error}>{errors.name}</Text>
+              ) : null}
+            </View>
+
             {/* Email */}
             <View style={styles.field}>
               <Text style={styles.label}>EMAIL</Text>
@@ -129,13 +174,7 @@ export default function RegisterScreen({ navigation }) {
                   value={email}
                   onChangeText={(text) => {
                     setEmail(text);
-
-                    if (errors.email) {
-                      setErrors((prev) => ({
-                        ...prev,
-                        email: null,
-                      }));
-                    }
+                    
                   }}
                 />
               </View>
@@ -161,16 +200,9 @@ export default function RegisterScreen({ navigation }) {
                   value={password}
                   onChangeText={(text) => {
                     setPassword(text);
-
-                    if (errors.password) {
-                      setErrors((prev) => ({
-                        ...prev,
-                        password: null,
-                      }));
-                    }
+                    
                   }}
-                  onSubmitEditing={handleRegister}
-                  returnKeyType="done"
+                  returnKeyType="next"
                 />
 
                 <Pressable
@@ -183,6 +215,34 @@ export default function RegisterScreen({ navigation }) {
 
               {errors.password ? (
                 <Text style={styles.error}>{errors.password}</Text>
+              ) : null}
+            </View>
+
+            {/* Confirm password */}
+            <View style={styles.field}>
+              <Text style={styles.label}>CONFIRM PASSWORD</Text>
+
+              <View style={styles.inputWrap}>
+                <Text style={styles.icon}>▣</Text>
+
+                <TextInput
+                  style={styles.input}
+                  placeholder="Repeat your password"
+                  placeholderTextColor="#7d6d65"
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                  value={confirmPassword}
+                  onChangeText={(text) => {
+                    setConfirmPassword(text);
+                    
+                  }}
+                  onSubmitEditing={handleRegister}
+                  returnKeyType="done"
+                />
+              </View>
+
+              {errors.confirmPassword ? (
+                <Text style={styles.error}>{errors.confirmPassword}</Text>
               ) : null}
             </View>
 
