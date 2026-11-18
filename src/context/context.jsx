@@ -1,40 +1,28 @@
-import { createContext, useContext, useState, useEffect } from "react";
-
-import { saveData, getData } from "../storage/storage";
+import { createContext, useContext, useEffect, useState } from "react";
+import { supabase } from "../backend/api";
 
 export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [isGuest, setIsGuest] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function loadUser() {
-      try {
-        const guest = await getData("isGuest");
+    const { data: { subscription }} = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(Boolean(session?.user));
+      setIsLoading(false)});
 
-        if (guest === "true") {
-          setIsGuest(true);
-        }
-      } catch (error) {
-        console.log("Error loading user:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    loadUser();
+    return () => subscription.unsubscribe();
   }, []);
 
-  async function continueAsGuest() {
-    await saveData("isGuest", "true");
-    setIsGuest(true);
-  }
+  const isGuest = !isLoggedIn;
+
+
+
+  
 
   return (
-    <AuthContext.Provider
-      value={{ isGuest, setIsGuest, continueAsGuest, isLoading }}
-    >
+    <AuthContext.Provider value={{ isLoggedIn, isGuest, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
