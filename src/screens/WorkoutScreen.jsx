@@ -166,10 +166,10 @@ export default function WorkoutScreen({ navigation }) {
           />
         }
         contentContainerStyle={[
-          styles.list,
+          styles.list, 
           {
             // при guest има прозрачен хедър, който покрива горната част
-            paddingTop: insets.top + (isGuest ? 64 : 16),
+            paddingTop: insets.top + (isGuest === true ? 64 : 16),
             paddingBottom: TAB_BAR_SPACE + insets.bottom,
           },
         ]}
