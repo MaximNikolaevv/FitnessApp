@@ -1,4 +1,4 @@
-import api from "../api";
+import { api } from "../api";
 
 export async function getAll() {
   const response = await api.get("/workouts?order=id.asc", {
@@ -15,3 +15,4 @@ export async function getById(workoutId) {
 
   return result[0];
 }
+
