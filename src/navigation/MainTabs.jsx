@@ -60,16 +60,16 @@ export function MainTabs() {
               <Ionicons
                 name="add-circle-outline"
                 size={24}
-                color={isGuest ? "#441704" : color}
+                color={isGuest === true ? "#441704" : color}
               />
             ),
             tabBarLabelStyle: {
-              color: isGuest ? "#441704" : undefined,
+              color: isGuest === true ? "#441704" : undefined,
             },
           }}
           listeners={{
             tabPress: (e) => {
-              if (isGuest) {
+              if (isGuest === true) {
                 e.preventDefault();
                 setModalVisible(true);
               }
@@ -95,16 +95,16 @@ export function MainTabs() {
               <Ionicons
                 name="person-outline"
                 size={24}
-                color={isGuest ? "#441704" : color}
+                color={isGuest === true ? "#441704" : color}
               />
             ),
             tabBarLabelStyle: {
-              color: isGuest ? "#441704" : undefined,
+              color: isGuest === true ? "#441704" : undefined,
             },
           }}
           listeners={{
             tabPress: (e) => {
-              if (isGuest) {
+              if (isGuest === true) {
                 e.preventDefault();
                 setModalVisible(true);
               }
