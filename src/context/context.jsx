@@ -7,6 +7,7 @@ export function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+
   useEffect(() => {
     const { data: { subscription }} = supabase.auth.onAuthStateChange((_event, session) => {
       setIsLoggedIn(Boolean(session?.user));
@@ -19,7 +20,7 @@ export function AuthProvider({ children }) {
 
 
 
-  
+
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, isGuest, isLoading }}>
