@@ -1,22 +1,38 @@
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const supabasePublishableKey = process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+
+export const supabase = createClient(supabaseUrl, supabasePublishableKey, {
+  auth: {
+    storage: AsyncStorage,
+    autoRefreshToken: true,
+  },
+});
 
 const base = axios.create({
-  baseURL: "https://qhahlswszeculdkyvxeo.supabase.co",
+  baseURL: supabaseUrl,
   headers: {
-    apikey: "sb_publishable_I9xnl1Pg0a0rqDeNP5tpEg_aEb-9Ayw",
+    apikey: supabasePublishableKey,
     "Content-Type": "application/json",
   },
 });
 
-const api = axios.create({
+export const api = axios.create({
   ...base.defaults,
   baseURL: `${base.defaults.baseURL}/rest/v1`,
 });
 
+export const auth = axios.create({
+  ...base.defaults,
+  baseURL: `${base.defaults.baseURL}/auth/v1`,
+});
 
+export const storage = axios.create({
+  ...base.defaults,
+  baseURL: `${base.defaults.baseURL}/storage/v1`,
+});
 
-export default api;
-
-// https://qhahlswszeculdkyvxeo.supabase.co/rest/v1/workouts
-
-// https://qhahlswszeculdkyvxeo.supabase.co/rest/v1/exercises
