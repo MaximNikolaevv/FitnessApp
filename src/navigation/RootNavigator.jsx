@@ -10,13 +10,13 @@ import WorkoutDetailsScreen from "../screens/workoutDetails";
 const Stack = createNativeStackNavigator();
 
 export default function RootNavigator() {
-  const { isGuest, isLoading } = useUserContext();
+  const { isLoggedIn, isLoading } = useUserContext();
 
   if (isLoading) return null;
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      // initialRouteName={isGuest ? "MainTabs" : "Home"}
+      initialRouteName={isLoggedIn ? "MainTabs" : "Home"}
     >
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
