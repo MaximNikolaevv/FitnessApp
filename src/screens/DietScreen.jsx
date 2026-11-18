@@ -18,7 +18,7 @@ import { useUserContext } from "../context/context";
 
 const BG = "#170f0c";
 const ACCENT = "#d98f6b";
-const TAB_BAR_SPACE = 100; 
+const TAB_BAR_SPACE = 100;
 
 function MealRow({ item }) {
   return (
@@ -92,7 +92,7 @@ export default function DietScreen() {
           contentContainerStyle={[
             styles.listContent,
             {
-              paddingTop: insets.top + (isGuest ? 64 : 16),
+              paddingTop: insets.top + (isGuest === true ? 64 : 16),
               paddingBottom: TAB_BAR_SPACE + insets.bottom,
             },
           ]}
