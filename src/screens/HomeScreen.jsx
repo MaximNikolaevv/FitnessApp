@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import * as NavigationBar from "expo-navigation-bar";
+import { NavigationBar } from "expo-navigation-bar";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import { Oswald_600SemiBold } from "@expo-google-fonts/oswald";
@@ -7,28 +7,23 @@ import {
   OpenSans_400Regular,
   OpenSans_600SemiBold,
 } from "@expo-google-fonts/open-sans";
-import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
-import { useEffect } from "react";
+import { Platform, StyleSheet, Text, View } from "react-native";
+
 import { Link } from "@react-navigation/native";
 
-export default function HomeScreen({  }) {
+export default function HomeScreen({}) {
   const [fontsLoaded] = useFonts({
     Oswald_600SemiBold,
     OpenSans_400Regular,
     OpenSans_600SemiBold,
   });
 
-  useEffect(() => {
-    if (Platform.OS === "android") {
-      NavigationBar.setVisibilityAsync("hidden");
-    }
-  }, []);
-
   if (!fontsLoaded) return null;
 
   return (
     <View style={styles.root}>
       <StatusBar style="light" hidden={Platform.OS === "android"} />
+      <NavigationBar hidden={true} />
 
       <Image
         source={require("../../img/HomePage.jpg")}
@@ -136,7 +131,6 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     color: "#241915",
     textAlign: "center",
-   
   },
   secondaryButton: {
     height: 45,
@@ -146,15 +140,13 @@ const styles = StyleSheet.create({
     borderWidth: 2.5,
     borderColor: "rgba(217,143,107,0.55)",
     backgroundColor: "rgba(23,15,12,0.6)",
-    paddingBottom: 8
-    
+    paddingBottom: 8,
   },
   secondaryText: {
     fontFamily: "Oswald_600SemiBold",
     fontSize: 18,
     color: "#fff",
     textAlign: "center",
-  
   },
   pressed: { opacity: 0.8, transform: [{ scale: 0.98 }] },
 });

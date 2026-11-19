@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Platform,
 } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -15,6 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { categoryApi } from "../backend";
 import { useUserContext } from "../context/context";
+import * as NavigationBar from "expo-navigation-bar";
 
 const ACCENT = "#d98f6b";
 const BG = "#170f0c";
@@ -166,7 +168,7 @@ export default function WorkoutScreen({ navigation }) {
           />
         }
         contentContainerStyle={[
-          styles.list, 
+          styles.list,
           {
             // при guest има прозрачен хедър, който покрива горната част
             paddingTop: insets.top + (isGuest === true ? 64 : 16),
