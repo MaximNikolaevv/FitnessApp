@@ -1,6 +1,5 @@
 import { supabase } from "../api";
 
-
 export async function registerUser(email, password, name) {
   const { data, error } = await supabase.auth.signUp({
     email: email.trim(),
@@ -10,8 +9,6 @@ export async function registerUser(email, password, name) {
         name: name.trim(),
       },
     },
-
-    
   });
 
   if (error) throw error;
@@ -28,4 +25,6 @@ export async function loginUser(email, password) {
   return data;
 }
 
-// export async function logoutUser() {
+export async function logoutUser() {
+  await supabase.auth.signOut();
+}
