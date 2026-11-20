@@ -1,13 +1,14 @@
+
 import { useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import DeleteModal from "../components/DeleteModal";
+import DeleteModal from "../components/SignOutModal";
 import { authApi } from "../backend";
 
 const BG = "#170f0c";
-const DANGER = "#ff6b6b";
+const DANGER = "#d98f6b";
 
 export default function ProfileScreen({ navigation }) {
   const [confirmVisible, setConfirmVisible] = useState(false);
@@ -49,19 +50,20 @@ export default function ProfileScreen({ navigation }) {
         style={StyleSheet.absoluteFill}
       />
 
-      {/* Danger zone */}
+      {/* Sign Out */}
       <View style={styles.content}>
         <View style={styles.dangerCard}>
           <View style={styles.dangerHeader}>
             <View style={styles.dangerIcon}>
-              <Ionicons name="warning-outline" size={18} color={DANGER} />
+              <Ionicons name="log-out-outline" size={18} color={DANGER} />
             </View>
-            <Text style={styles.dangerKicker}>DANGER ZONE</Text>
+
+            <Text style={styles.dangerKicker}>SIGN OUT</Text>
           </View>
 
           <Text style={styles.dangerText}>
-            Deleting your profile removes your account and all your data. This
-            cannot be undone.
+            You are about to sign out of your account. You can log back in
+            anytime to access your workouts and personal data.
           </Text>
 
           <Pressable
@@ -71,8 +73,8 @@ export default function ProfileScreen({ navigation }) {
               pressed && styles.pressed,
             ]}
           >
-            <Ionicons name="trash-outline" size={18} color={DANGER} />
-            <Text style={styles.deleteText}>DELETE PROFILE</Text>
+            <Ionicons name="log-out-outline" size={18} color={DANGER} />
+            <Text style={styles.deleteText}>SIGN OUT</Text>
           </Pressable>
         </View>
       </View>
@@ -88,56 +90,74 @@ export default function ProfileScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1 },
+  screen: {
+    flex: 1,
+  },
 
   content: {
     flex: 1,
     justifyContent: "flex-end",
     paddingHorizontal: 24,
-    paddingBottom: 24,
+    paddingBottom: 28,
   },
 
-  // Danger card
   dangerCard: {
-    gap: 14,
-    padding: 18,
-    borderRadius: 20,
-    backgroundColor: "rgba(23,15,12,0.78)",
+    gap: 18,
+    padding: 22,
+    borderRadius: 22,
+    backgroundColor: "rgba(23,15,12,0.88)",
     borderWidth: 1,
-    borderColor: "rgba(255,107,107,0.30)",
+    borderColor: "rgba(217,143,107,0.35)",
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 8,
   },
-  dangerHeader: { flexDirection: "row", alignItems: "center", gap: 10 },
+
+  dangerHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+
   dangerIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 40,
+    height: 40,
+    borderRadius: 13,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,107,107,0.14)",
+    backgroundColor: "rgba(217,143,107,0.13)",
+    borderWidth: 1,
+    borderColor: "rgba(217,143,107,0.18)",
   },
+
   dangerKicker: {
     fontFamily: "OpenSans_600SemiBold",
-    fontSize: 11,
+    fontSize: 12,
     letterSpacing: 2.5,
     color: DANGER,
   },
+
   dangerText: {
     fontFamily: "OpenSans_400Regular",
     fontSize: 14,
-    lineHeight: 20,
+    lineHeight: 22,
     color: "#d8cbc4",
   },
+
   deleteButton: {
-    height: 52,
+    height: 54,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 8,
-    borderRadius: 14,
+    gap: 10,
+    borderRadius: 15,
     borderWidth: 1.5,
-    borderColor: "rgba(255,107,107,0.55)",
-    backgroundColor: "rgba(255,107,107,0.08)",
+    borderColor: "rgba(217,143,107,0.55)",
+    backgroundColor: "rgba(217,143,107,0.09)",
   },
+
   deleteText: {
     fontFamily: "Oswald_600SemiBold",
     fontSize: 16,
@@ -145,78 +165,8 @@ const styles = StyleSheet.create({
     color: DANGER,
   },
 
-  // Modal
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 24,
-    backgroundColor: "rgba(0,0,0,0.7)",
+  pressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
   },
-  modalContent: {
-    width: "100%",
-    maxWidth: 400,
-    alignItems: "center",
-    gap: 12,
-    padding: 24,
-    borderRadius: 20,
-    backgroundColor: BG,
-    borderWidth: 1,
-    borderColor: "rgba(255,107,107,0.35)",
-  },
-  modalIcon: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(255,107,107,0.14)",
-    marginBottom: 4,
-  },
-  modalTitle: {
-    fontFamily: "Oswald_600SemiBold",
-    fontSize: 24,
-    letterSpacing: 1,
-    textTransform: "uppercase",
-    color: "#fff",
-    textAlign: "center",
-  },
-  modalText: {
-    fontFamily: "OpenSans_400Regular",
-    fontSize: 15,
-    lineHeight: 22,
-    color: "#b9a89f",
-    textAlign: "center",
-    marginBottom: 8,
-  },
-  confirmButton: {
-    width: "100%",
-    minHeight: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 14,
-    backgroundColor: DANGER,
-  },
-  confirmText: {
-    fontFamily: "Oswald_600SemiBold",
-    fontSize: 16,
-    letterSpacing: 2,
-    color: "#241915",
-  },
-  cancelButton: {
-    width: "100%",
-    minHeight: 46,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "rgba(217,143,107,0.55)",
-  },
-  cancelText: {
-    fontFamily: "OpenSans_600SemiBold",
-    fontSize: 15,
-    color: "#fff",
-  },
-
-  pressed: { opacity: 0.85, transform: [{ scale: 0.98 }] },
 });
