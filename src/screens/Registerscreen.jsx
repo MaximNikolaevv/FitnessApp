@@ -31,7 +31,6 @@ export default function RegisterScreen({ navigation }) {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-
   const validate = () => {
     const next = {};
 
@@ -148,7 +147,6 @@ export default function RegisterScreen({ navigation }) {
                   value={name}
                   onChangeText={(text) => {
                     setName(text);
-                   
                   }}
                 />
               </View>
@@ -174,7 +172,6 @@ export default function RegisterScreen({ navigation }) {
                   value={email}
                   onChangeText={(text) => {
                     setEmail(text);
-                    
                   }}
                 />
               </View>
@@ -200,7 +197,6 @@ export default function RegisterScreen({ navigation }) {
                   value={password}
                   onChangeText={(text) => {
                     setPassword(text);
-                    
                   }}
                   returnKeyType="next"
                 />
@@ -234,7 +230,6 @@ export default function RegisterScreen({ navigation }) {
                   value={confirmPassword}
                   onChangeText={(text) => {
                     setConfirmPassword(text);
-                    
                   }}
                   onSubmitEditing={handleRegister}
                   returnKeyType="done"
