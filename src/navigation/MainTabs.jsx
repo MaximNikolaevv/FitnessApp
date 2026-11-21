@@ -8,13 +8,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { useUserContext } from "../context/context";
 
 import WorkoutScreen from "../screens/WorkoutScreen";
-import CreateWorkoutScreen from "../screens/CreateWorkoutScreen";
+import CreateScreen from "../screens/CreateScreen";
 import DietScreen from "../screens/DietScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 
 import GuestAccessModal from "../components/GuestAccessModal";
 
 const Tab = createBottomTabNavigator();
+const TAB_ICON_SIZE = 23;
+const TAB_LABEL_SIZE = 12;
 
 export function MainTabs() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -30,6 +32,7 @@ export function MainTabs() {
 
           tabBarActiveTintColor: "#d98f6b",
           tabBarInactiveTintColor: "#887b75",
+          tabBarLabelStyle: { fontSize: TAB_LABEL_SIZE },
 
           tabBarStyle: {
             backgroundColor: "#170f0c",
@@ -46,26 +49,32 @@ export function MainTabs() {
           component={WorkoutScreen}
           options={{
             tabBarIcon: ({ color }) => (
-              <Ionicons name="barbell-outline" size={23} color={color} />
+              <Ionicons name="barbell-outline" size={TAB_ICON_SIZE} color={color} />
             ),
           }}
         />
 
         <Tab.Screen
           name="CreateWorkout"
-          component={CreateWorkoutScreen}
+          component={CreateScreen}
           options={{
-            tabBarLabel: "Create",
+            tabBarLabel: ({ color }) => (
+              <Text
+                style={{
+                  color: isGuest === true ? "#441704" : color,
+                  fontSize: TAB_LABEL_SIZE,
+                }}
+              >
+                Create
+              </Text>
+            ),
             tabBarIcon: ({ color }) => (
               <Ionicons
                 name="add-circle-outline"
-                size={24}
+                size={TAB_ICON_SIZE}
                 color={isGuest === true ? "#441704" : color}
               />
             ),
-            tabBarLabelStyle: {
-              color: isGuest === true ? "#441704" : undefined,
-            },
           }}
           listeners={{
             tabPress: (e) => {
@@ -82,7 +91,7 @@ export function MainTabs() {
           component={DietScreen}
           options={{
             tabBarIcon: ({ color }) => (
-              <Ionicons name="nutrition-outline" size={23} color={color} />
+              <Ionicons name="nutrition-outline" size={TAB_ICON_SIZE} color={color} />
             ),
           }}
         />
@@ -91,16 +100,23 @@ export function MainTabs() {
           name="Profile"
           component={ProfileScreen}
           options={{
+            tabBarLabel: ({ color }) => (
+              <Text
+                style={{
+                  color: isGuest === true ? "#441704" : color,
+                  fontSize: TAB_LABEL_SIZE,
+                }}
+              >
+                Profile
+              </Text>
+            ),
             tabBarIcon: ({ color }) => (
               <Ionicons
                 name="person-outline"
-                size={24}
+                size={TAB_ICON_SIZE}
                 color={isGuest === true ? "#441704" : color}
               />
             ),
-            tabBarLabelStyle: {
-              color: isGuest === true ? "#441704" : undefined,
-            },
           }}
           listeners={{
             tabPress: (e) => {
