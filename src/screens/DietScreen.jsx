@@ -23,7 +23,17 @@ const TAB_BAR_SPACE = 100;
 function MealRow({ item }) {
   return (
     <View style={styles.mealCard}>
-      <Image source={{ uri: item.img }} style={styles.mealImage} />
+      {item.img?.trim() ? (
+        <Image source={{ uri: item.img }} style={styles.mealImage} />
+      ) : (
+        <View style={styles.mealPlaceholder}>
+          <Ionicons
+            name="restaurant-outline"
+            size={36}
+            color="rgba(217,143,107,0.55)"
+          />
+        </View>
+      )}
 
       <View style={styles.mealContent}>
         <Text style={styles.mealName}>{item.food}</Text>
@@ -172,6 +182,16 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "rgba(217,143,107,0.15)",
+  },
+
+  mealPlaceholder: {
+    width: 115,
+    height: 145,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(217,143,107,0.10)",
+    borderRightWidth: 1,
+    borderRightColor: "rgba(217,143,107,0.15)",
   },
 
   mealImage: {
