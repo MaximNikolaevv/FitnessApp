@@ -6,6 +6,8 @@ import RegisterScreen from "../screens/Registerscreen";
 import { MainTabs } from "./MainTabs";
 import { useUserContext } from "../context/context";
 import WorkoutDetailsScreen from "../screens/workoutDetails";
+import CreateWorkout from "../screens/CreateWorkoutScreen";
+import CreateDiet from "../screens/CreateDietScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +25,8 @@ export default function RootNavigator() {
       <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen name="MainTabs" component={MainTabs} />
       <Stack.Screen name="WorkoutDetails" component={WorkoutDetailsScreen} />
+      <Stack.Screen name="CreateWorkout" component={CreateWorkout} />
+      <Stack.Screen name="CreateDiet" component={CreateDiet}/>
     </Stack.Navigator>
   );
 }
