@@ -8,6 +8,7 @@ import { useUserContext } from "../context/context";
 import WorkoutDetailsScreen from "../screens/workoutDetails";
 import CreateWorkout from "../screens/CreateWorkoutScreen";
 import CreateDiet from "../screens/CreateDietScreen";
+import CreateExercises from "../screens/CreateExercises";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,7 +27,8 @@ export default function RootNavigator() {
       <Stack.Screen name="MainTabs" component={MainTabs} />
       <Stack.Screen name="WorkoutDetails" component={WorkoutDetailsScreen} />
       <Stack.Screen name="CreateWorkout" component={CreateWorkout} />
-      <Stack.Screen name="CreateDiet" component={CreateDiet}/>
+      <Stack.Screen name="CreateExercises" component={CreateExercises} />
+      <Stack.Screen name="CreateDiet" component={CreateDiet} />
     </Stack.Navigator>
   );
 }
