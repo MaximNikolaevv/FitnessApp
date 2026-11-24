@@ -16,3 +16,13 @@ export async function getById(workoutId) {
   return result[0];
 }
 
+export async function AddWorkout(workoutData) {
+  const response = await api.post("/workouts", workoutData, {
+    headers: { Prefer: "return=representation" }, // return the data after the post
+  });
+  const workout = Array.isArray(response.data)
+    ? response.data[0]
+    : response.data;
+
+  return workout;
+}
