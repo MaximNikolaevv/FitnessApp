@@ -50,6 +50,7 @@ function Field({
         <TextInput
           {...inputProps}
           style={styles.input}
+          placeholderTextColor={MUTED}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
         />

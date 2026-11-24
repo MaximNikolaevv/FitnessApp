@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-
 
 export default function CreateScreen({ navigation }) {
   const BG = "#170f0c";
@@ -70,7 +68,6 @@ export default function CreateScreen({ navigation }) {
             }}
             style={({ pressed }) => [
               styles.optionCard,
-
               pressed && styles.pressed,
             ]}
           >

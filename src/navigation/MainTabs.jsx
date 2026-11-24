@@ -55,7 +55,7 @@ export function MainTabs() {
         />
 
         <Tab.Screen
-          name="CreateWorkout"
+          name="Create"
           component={CreateScreen}
           options={{
             tabBarLabel: ({ color }) => (

@@ -23,6 +23,7 @@ import {
 } from "@expo-google-fonts/open-sans";
 import { Link } from "@react-navigation/native";
 import { authApi } from "../backend";
+
 const ACCENT = "#d98f6b";
 const MUTED = "#9c8a80";
 const DANGER = "#ff6b6b";

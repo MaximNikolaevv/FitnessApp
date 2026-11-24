@@ -18,7 +18,6 @@ import YoutubePlayer from "react-native-youtube-iframe";
 
 const ACCENT = "#d98f6b";
 const BG = "#170f0c";
-const CARD = "rgba(255,255,255,0.06)";
 const LINE = "rgba(255,255,255,0.12)";
 const MUTED = "#b9a89f";
 const SOFT = "#d8cbc4";
