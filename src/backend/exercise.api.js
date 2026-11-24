@@ -7,3 +7,12 @@ export async function getByWorkoutId(workoutId) {
 
   return response.data;
 }
+
+export async function AddExercises(workoutId, exerciseData) {
+  const response = await api.post("/exercises", {
+    ...exerciseData,
+    workout_id: workoutId,
+  });
+
+  return response.data;
+}
