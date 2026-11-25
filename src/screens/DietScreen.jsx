@@ -15,12 +15,23 @@ import { useEffect, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { dietApi } from "../backend";
 import { useUserContext } from "../context/context";
+import ItemActions, { confirmDelete } from "../components/ItemActions";
+import EditSheet from "../components/EditSheet";
 
 const BG = "#170f0c";
 const ACCENT = "#d98f6b";
 const TAB_BAR_SPACE = 100;
 
-function MealRow({ item }) {
+const DIET_FIELDS = [
+  { key: "food", label: "FOOD", icon: "restaurant-outline" },
+  { key: "calories", label: "CALORIES", icon: "flame-outline", suffix: "kcal", numeric: true },
+  { key: "protein", label: "PROTEIN", icon: "barbell-outline", suffix: "g", numeric: true },
+  { key: "carbs", label: "CARBS", icon: "flash-outline", suffix: "g", numeric: true },
+  { key: "fat", label: "FAT", icon: "water-outline", suffix: "g", numeric: true },
+  { key: "img", label: "IMAGE URL", icon: "image-outline", url: true },
+];
+
+function MealRow({ item, canManage, onEdit, onDelete }) {
   return (
     <View style={styles.mealCard}>
       {item.img?.trim() ? (
@@ -36,12 +47,23 @@ function MealRow({ item }) {
       )}
 
       <View style={styles.mealContent}>
-        <Text style={styles.mealName}>{item.food}</Text>
+        <Text
+          style={[styles.mealName, canManage && styles.mealNameManage]}
+          numberOfLines={1}
+        >
+          {item.food}
+        </Text>
         <Text style={styles.calories}>{item.calories} kcal</Text>
         <Text style={styles.macroText}>Protein: {item.protein}g</Text>
         <Text style={styles.macroText}>Carbs: {item.carbs}g</Text>
         <Text style={styles.macroText}>Fat: {item.fat}g</Text>
       </View>
+
+      {canManage && (
+        <View style={styles.mealActions}>
+          <ItemActions size={30} onEdit={onEdit} onDelete={onDelete} />
+        </View>
+      )}
     </View>
   );
 }
@@ -53,6 +75,32 @@ export default function DietScreen() {
 
   const insets = useSafeAreaInsets();
   const { isGuest } = useUserContext();
+  const canManage = !isGuest;
+  const [editing, setEditing] = useState(null);
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async (values) => {
+    try {
+      setSaving(true);
+      await dietApi.UpdateDiet(editing.id, values);
+      setEditing(null);
+      await load();
+    } catch (error) {
+      Alert.alert("Error", error.response?.data?.message ?? error.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = (item) =>
+    confirmDelete(`Delete "${item.food}"?`, async () => {
+      try {
+        await dietApi.DeleteDiet(item.id);
+        await load();
+      } catch (error) {
+        Alert.alert("Error", error.response?.data?.message ?? error.message);
+      }
+    });
 
   // Зареждане на храните
   const load = async () => {
@@ -98,7 +146,14 @@ export default function DietScreen() {
         <FlatList
           data={diet}
           keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) => <MealRow item={item} />}
+          renderItem={({ item }) => (
+            <MealRow
+              item={item}
+              canManage={canManage}
+              onEdit={() => setEditing(item)}
+              onDelete={() => handleDelete(item)}
+            />
+          )}
           contentContainerStyle={[
             styles.listContent,
             {
@@ -108,7 +163,7 @@ export default function DietScreen() {
           ]}
           ListHeaderComponent={
             <View style={styles.header}>
-              <Text style={styles.kicker}>TODAY'S NUTRITION</Text>
+              <Text style={styles.kicker}>{"TODAY'S NUTRITION"}</Text>
               <Text style={styles.title}>Diet</Text>
               <Text style={styles.subtitle}>
                 Keep track of what you eat today.
@@ -129,6 +184,16 @@ export default function DietScreen() {
           }
         />
       )}
+      <EditSheet
+        key={editing?.id ?? "closed"}
+        visible={!!editing}
+        title="Edit meal"
+        fields={DIET_FIELDS}
+        initialValues={editing}
+        loading={saving}
+        onClose={() => setEditing(null)}
+        onSave={handleSave}
+      />
     </View>
   );
 }
@@ -212,6 +277,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
   },
+  mealNameManage: { paddingRight: 76 },
+  mealActions: { position: "absolute", top: 8, right: 8 },
 
   calories: {
     color: ACCENT,
