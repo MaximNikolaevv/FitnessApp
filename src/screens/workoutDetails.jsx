@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -7,14 +7,17 @@ import {
   StyleSheet,
   Text,
   View,
+  useWindowDimensions,
 } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { categoryApi, exerciseApi } from "../backend";
-import { useWindowDimensions } from "react-native"; // добави към импорта от react-native
 import YoutubePlayer from "react-native-youtube-iframe";
+import ItemActions, { confirmDelete } from "../components/ItemActions";
+import EditSheet from "../components/EditSheet";
+import { useUserContext } from "../context/context";
 
 const ACCENT = "#d98f6b";
 const BG = "#170f0c";
@@ -22,7 +25,7 @@ const LINE = "rgba(255,255,255,0.12)";
 const MUTED = "#b9a89f";
 const SOFT = "#d8cbc4";
 
-function ExerciseRow({ item, index }) {
+function ExerciseRow({ item, index, canManage, onEdit, onDelete }) {
   const { width } = useWindowDimensions();
   const [playing, setPlaying] = useState(false);
 
@@ -48,10 +51,14 @@ function ExerciseRow({ item, index }) {
           )}
         </View>
 
-        <View style={styles.setsPill}>
-          <Text style={styles.setsText}>
-            {item.sets} × {item.reps}
-          </Text>
+        <View style={styles.rowSide}>
+          <View style={styles.setsPill}>
+            <Text style={styles.setsText}>
+              {item.sets} × {item.reps}
+            </Text>
+          </View>
+
+          {canManage && <ItemActions size={28} onEdit={onEdit} onDelete={onDelete} />}
         </View>
       </View>
 
@@ -97,8 +104,35 @@ export default function WorkoutDetailsScreen({ route, navigation }) {
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
   const { workoutId } = route.params;
+  const { isGuest } = useUserContext();
+  const canManage = !isGuest;
+  const [editing, setEditing] = useState(null);
+  const [saving, setSaving] = useState(false);
 
-  const load = async () => {
+  const handleSave = async (values) => {
+    try {
+      setSaving(true);
+      await exerciseApi.UpdateExercise(editing.id, values);
+      setEditing(null);
+      await load();
+    } catch (error) {
+      Alert.alert("Error", error.response?.data?.message ?? error.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = (item) =>
+    confirmDelete(`Delete "${item.name}"?`, async () => {
+      try {
+        await exerciseApi.DeleteExercise(item.id);
+        await load();
+      } catch (error) {
+        Alert.alert("Error", error.response?.data?.message ?? error.message);
+      }
+    });
+
+  const load = useCallback(async () => {
     setLoading(true);
     try {
       const [workoutData, exerciseData] = await Promise.all([
@@ -117,7 +151,7 @@ export default function WorkoutDetailsScreen({ route, navigation }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [workoutId]);
 
   useEffect(() => {
     load();
@@ -159,7 +193,13 @@ export default function WorkoutDetailsScreen({ route, navigation }) {
         data={exercises}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item, index }) => (
-          <ExerciseRow item={item} index={index} />
+          <ExerciseRow
+            item={item}
+            index={index}
+            canManage={canManage}
+            onEdit={() => setEditing(item)}
+            onDelete={() => handleDelete(item)}
+          />
         )}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[
@@ -206,6 +246,15 @@ export default function WorkoutDetailsScreen({ route, navigation }) {
             <Text style={styles.empty}>No exercises yet.</Text>
           )
         }
+      />
+      <EditSheet
+        key={editing?.id ?? "closed"}
+        visible={!!editing}
+        title="Edit exercise"
+        initialValues={editing}
+        loading={saving}
+        onClose={() => setEditing(null)}
+        onSave={handleSave}
       />
     </View>
   );
@@ -318,6 +367,7 @@ const styles = StyleSheet.create({
     color: ACCENT,
   },
   rowText: { flex: 1, gap: 2 },
+  rowSide: { alignItems: "flex-end", gap: 8 },
   rowTitle: {
     fontFamily: "OpenSans_600SemiBold",
     fontSize: 15,
