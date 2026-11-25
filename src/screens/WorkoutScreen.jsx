@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -8,7 +8,6 @@ import {
   StyleSheet,
   Text,
   View,
-  Platform,
 } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -16,7 +15,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { categoryApi } from "../backend";
 import { useUserContext } from "../context/context";
-import * as NavigationBar from "expo-navigation-bar";
+import ItemActions, { confirmDelete } from "../components/ItemActions";
+import EditSheet from "../components/EditSheet";
 
 const ACCENT = "#d98f6b";
 const BG = "#170f0c";
@@ -24,6 +24,14 @@ const LINE = "rgba(255,255,255,0.12)";
 const MUTED = "#b9a89f";
 const SOFT = "#d8cbc4";
 const TAB_BAR_SPACE = 100;
+
+const WORKOUT_FIELDS = [
+  { key: "name", label: "NAME", icon: "create-outline" },
+  { key: "description", label: "DESCRIPTION", icon: "document-text-outline", multiline: true },
+  { key: "type", label: "TYPE", options: ["Push", "Pull", "Legs", "Upper", "Lower", "Full Body"] },
+  { key: "duration", label: "DURATION", icon: "time-outline", suffix: "min", numeric: true },
+  { key: "image_URL", label: "IMAGE URL", icon: "image-outline", url: true },
+];
 
 // Иконка за карта без снимка (image_URL е NULL), според type
 const TYPE_ICONS = {
@@ -35,15 +43,18 @@ const TYPE_ICONS = {
   "Full Body": "flame",
 };
 
-function WorkoutCard({ item, onPress }) {
+function WorkoutCard({ item, onPress, canManage, onEdit, onDelete }) {
   const icon = TYPE_ICONS[item.type] ?? "barbell";
 
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [styles.card, pressed && styles.pressed]}
-    >
-      {/* Фон: снимка или градиент с голяма иконка */}(
+    <View style={styles.card}>
+      <Pressable
+        onPress={onPress}
+        style={({ pressed }) => [
+          StyleSheet.absoluteFill,
+          pressed && styles.pressed,
+        ]}
+      />
       <LinearGradient
         colors={["#3a241b", "#1d1310"]}
         start={{ x: 0, y: 0 }}
@@ -57,7 +68,6 @@ function WorkoutCard({ item, onPress }) {
           style={styles.watermark}
         />
       </LinearGradient>
-      )
       <LinearGradient
         colors={[
           "rgba(23,15,12,0.10)",
@@ -68,8 +78,12 @@ function WorkoutCard({ item, onPress }) {
         style={StyleSheet.absoluteFill}
       />
       <View style={styles.cardContent}>
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>{item.type}</Text>
+        <View style={styles.cardTop}>
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>{item.type}</Text>
+          </View>
+
+          {canManage && <ItemActions onEdit={onEdit} onDelete={onDelete} />}
         </View>
 
         <View style={styles.cardBottom}>
@@ -95,7 +109,7 @@ function WorkoutCard({ item, onPress }) {
           </View>
         </View>
       </View>
-    </Pressable>
+    </View>
   );
 }
 
@@ -106,6 +120,32 @@ export default function WorkoutScreen({ navigation }) {
   const [workouts, setWorkouts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const canManage = !isGuest;
+  const [editing, setEditing] = useState(null);
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async (values) => {
+    try {
+      setSaving(true);
+      await categoryApi.UpdateWorkout(editing.id, values);
+      setEditing(null);
+      await load();
+    } catch (error) {
+      Alert.alert("Error", error.response?.data?.message ?? error.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = (item) =>
+    confirmDelete(`Delete "${item.name}"?`, async () => {
+      try {
+        await categoryApi.DeleteWorkout(item.id);
+        await load();
+      } catch (error) {
+        Alert.alert("Error", error.response?.data?.message ?? error.message);
+      }
+    });
 
   const load = async () => {
     try {
@@ -154,9 +194,12 @@ export default function WorkoutScreen({ navigation }) {
         renderItem={({ item }) => (
           <WorkoutCard
             item={item}
+            canManage={canManage}
             onPress={() =>
               navigation.navigate("WorkoutDetails", { workoutId: item.id })
             }
+            onEdit={() => setEditing(item)}
+            onDelete={() => handleDelete(item)}
           />
         )}
         refreshControl={
@@ -191,6 +234,16 @@ export default function WorkoutScreen({ navigation }) {
             <Text style={styles.empty}>No workouts yet.</Text>
           )
         }
+      />
+      <EditSheet
+        key={editing?.id ?? "closed"}
+        visible={!!editing}
+        title="Edit workout"
+        fields={WORKOUT_FIELDS}
+        initialValues={editing}
+        loading={saving}
+        onClose={() => setEditing(null)}
+        onSave={handleSave}
       />
     </View>
   );
@@ -245,6 +298,11 @@ const styles = StyleSheet.create({
   cardContent: {
     flex: 1,
     padding: 18,
+    justifyContent: "space-between",
+  },
+  cardTop: {
+    flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
   },
 
