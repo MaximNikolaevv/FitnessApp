@@ -16,3 +16,30 @@ export async function AddExercises(workoutId, exerciseData) {
 
   return response.data;
 }
+
+export async function UpdateExercise(exerciseId, exerciseData) {
+  const response = await api.patch(
+    `/exercises?id=eq.${exerciseId}`,
+    exerciseData,
+    { headers: { Prefer: "return=representation" } },
+  );
+  const exercise = response.data?.[0];
+
+  if (!exercise) {
+    throw new Error("Exercise was not found or you do not own it.");
+  }
+
+  return exercise;
+}
+
+export async function DeleteExercise(exerciseId) {
+  const response = await api.delete(`/exercises?id=eq.${exerciseId}`, {
+    headers: { Prefer: "return=representation" },
+  });
+
+  if (!response.data?.[0]) {
+    throw new Error("Exercise was not found or you do not own it.");
+  }
+
+  return response.data[0];
+}
