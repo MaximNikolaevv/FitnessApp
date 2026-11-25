@@ -74,7 +74,7 @@ export default function CreateExercises({ route, navigation }) {
       />
 
       {/* Back button */}
-      <Pressable                                                    
+      <Pressable
         onPress={() => navigation?.goBack()}
         hitSlop={10}
         style={({ pressed }) => [
