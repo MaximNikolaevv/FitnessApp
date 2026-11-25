@@ -26,3 +26,32 @@ export async function AddWorkout(workoutData) {
 
   return workout;
 }
+
+export async function UpdateWorkout(workoutId, workoutData) {
+  const response = await api.patch(
+    `/workouts?id=eq.${workoutId}`,
+    workoutData,
+    {
+      headers: { Prefer: "return=representation" },
+    },
+  );
+  const workout = response.data?.[0];
+
+  if (!workout) {
+    throw new Error("Workout was not found or you do not own it.");
+  }
+
+  return workout;
+}
+
+export async function DeleteWorkout(workoutId) {
+  const response = await api.delete(`/workouts?id=eq.${workoutId}`, {
+    headers: { Prefer: "return=representation" },
+  });
+
+  if (!response.data?.[0]) {
+    throw new Error("Workout was not found or you do not own it.");
+  }
+
+  return response.data[0];
+}
