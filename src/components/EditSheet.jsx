@@ -30,14 +30,8 @@ export default function EditSheet({
   onSave,
 }) {
   const insets = useSafeAreaInsets();
-  const [values, setValues] = useState(() => {
-    const next = {};
-    fields.forEach((field) => {
-      next[field.key] = String(initialValues?.[field.key] ?? "");
-    });
-    return next;
-  });
-
+  const [values, setValues] = useState(() => initialValues ?? {});
+ 
   const setValue = (key) => (value) =>
     setValues((prev) => ({ ...prev, [key]: value }));
 
@@ -45,11 +39,11 @@ export default function EditSheet({
     const result = {};
 
     for (const field of fields) {
-      const raw = (values[field.key] ?? "").trim();
+      const raw = String(values[field.key] ?? "").trim();
 
       if (field.numeric) {
         const num = Number(raw);
-        if (raw === "" || Number.isNaN(num)) {
+        if (raw === "") {
           Alert.alert("Invalid value", `${field.label} must be a number.`);
           return;
         }
@@ -133,7 +127,7 @@ export default function EditSheet({
                   label={field.label}
                   icon={field.icon}
                   suffix={field.suffix}
-                  value={values[field.key] ?? ""}
+                  value={String(values[field.key] ?? "")}
                   onChangeText={setValue(field.key)}
                   multiline={field.multiline}
                   keyboardType={
