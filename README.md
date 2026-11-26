@@ -2,8 +2,6 @@
 
 FitnessApp is a cross-platform fitness and nutrition app built with React Native and Expo. Users can browse workouts, view exercises and video demonstrations, track nutrition, and create their own workout and diet entries.
 
-![FitnessApp Home](https://raw.githubusercontent.com/MaximNikolaevv/FitnessApp/main/img/HomePage.jpg)
-
 ## Features
 
 - Sign up and log in with Supabase
