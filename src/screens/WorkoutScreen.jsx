@@ -47,14 +47,10 @@ function WorkoutCard({ item, onPress, canManage, onEdit, onDelete }) {
   const icon = TYPE_ICONS[item.type] ?? "barbell";
 
   return (
-    <View style={styles.card}>
-      <Pressable
+    <Pressable
         onPress={onPress}
-        style={({ pressed }) => [
-          StyleSheet.absoluteFill,
-          pressed && styles.pressed,
-        ]}
-      />
+        style={({ pressed }) => [styles.card, pressed && styles.pressed]}
+      >
       <LinearGradient
         colors={["#3a241b", "#1d1310"]}
         start={{ x: 0, y: 0 }}
@@ -109,18 +105,17 @@ function WorkoutCard({ item, onPress, canManage, onEdit, onDelete }) {
           </View>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
 export default function WorkoutScreen({ navigation }) {
   const insets = useSafeAreaInsets();
-  const { isGuest } = useUserContext();
+  const { isGuest, userId } = useUserContext();
 
   const [workouts, setWorkouts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const canManage = !isGuest;
   const [editing, setEditing] = useState(null);
   const [saving, setSaving] = useState(false);
 
@@ -194,7 +189,7 @@ export default function WorkoutScreen({ navigation }) {
         renderItem={({ item }) => (
           <WorkoutCard
             item={item}
-            canManage={canManage}
+            canManage={!!userId && item.user_id === userId}
             onPress={() =>
               navigation.navigate("WorkoutDetails", { workoutId: item.id })
             }
