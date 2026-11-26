@@ -74,8 +74,7 @@ export default function DietScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
   const insets = useSafeAreaInsets();
-  const { isGuest } = useUserContext();
-  const canManage = !isGuest;
+  const { isGuest, userId } = useUserContext();
   const [editing, setEditing] = useState(null);
   const [saving, setSaving] = useState(false);
 
@@ -149,7 +148,7 @@ export default function DietScreen() {
           renderItem={({ item }) => (
             <MealRow
               item={item}
-              canManage={canManage}
+              canManage={!!userId && item.user_id === userId}
               onEdit={() => setEditing(item)}
               onDelete={() => handleDelete(item)}
             />
