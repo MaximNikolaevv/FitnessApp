@@ -29,12 +29,12 @@ export default function CreateScreen({ navigation }) {
 
       <View style={styles.content}>
         <View style={styles.heading}>
-          <Text style={styles.kicker}>LET'S GET STARTED</Text>
+          <Text style={styles.kicker}>LET&apos;S GET STARTED</Text>
 
-          <Text style={styles.title}>What would you like{"\n"}to create?</Text>
+          <Text style={styles.title}>What would you like to create?</Text>
 
           <Text style={styles.subtitle}>
-            Choose what you want to build and let's get to work.
+            Choose what you want to build and let&apos;s get to work.
           </Text>
         </View>
 

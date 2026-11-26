@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default-member */
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient } from "@supabase/supabase-js";
@@ -12,7 +13,6 @@ export const supabase = createClient(supabaseUrl, supabasePublishableKey, {
   },
 });
 
-
 const base = axios.create({
   baseURL: supabaseUrl,
   headers: {
@@ -20,7 +20,6 @@ const base = axios.create({
     "Content-Type": "application/json",
   },
 });
-
 
 export const api = axios.create({
   ...base.defaults,
