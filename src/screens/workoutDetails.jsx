@@ -25,6 +25,18 @@ const LINE = "rgba(255,255,255,0.12)";
 const MUTED = "#b9a89f";
 const SOFT = "#d8cbc4";
 
+const EXERCISE_FIELDS = [
+  { key: "name", label: "EXERCISE NAME", icon: "fitness-outline" },
+  { key: "sets", label: "SETS", icon: "layers-outline", numeric: true },
+  { key: "reps", label: "REPS", icon: "repeat-outline" },
+  {
+    key: "description",
+    label: "DESCRIPTION",
+    icon: "document-text-outline",
+    multiline: true,
+  },
+];
+
 function ExerciseRow({ item, index, canManage, onEdit, onDelete }) {
   const { width } = useWindowDimensions();
   const [playing, setPlaying] = useState(false);
@@ -104,8 +116,7 @@ export default function WorkoutDetailsScreen({ route, navigation }) {
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
   const { workoutId } = route.params;
-  const { isGuest } = useUserContext();
-  const canManage = !isGuest;
+  const { userId } = useUserContext();
   const [editing, setEditing] = useState(null);
   const [saving, setSaving] = useState(false);
 
@@ -196,7 +207,7 @@ export default function WorkoutDetailsScreen({ route, navigation }) {
           <ExerciseRow
             item={item}
             index={index}
-            canManage={canManage}
+            canManage={!!userId && item.user_id === userId}
             onEdit={() => setEditing(item)}
             onDelete={() => handleDelete(item)}
           />
@@ -251,6 +262,7 @@ export default function WorkoutDetailsScreen({ route, navigation }) {
         key={editing?.id ?? "closed"}
         visible={!!editing}
         title="Edit exercise"
+        fields={EXERCISE_FIELDS}
         initialValues={editing}
         loading={saving}
         onClose={() => setEditing(null)}
