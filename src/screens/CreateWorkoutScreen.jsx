@@ -15,6 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import FormField from "../components/FormField";
 import { categoryApi } from "../backend";
+import { useUserContext } from "../context/context";
 
 const BG = "#170f0c";
 const ACCENT = "#d98f6b";
@@ -25,6 +26,7 @@ const TYPES = ["Push", "Pull", "Legs", "Upper", "Lower", "Full Body"];
 
 export default function CreateWorkout({ navigation }) {
   const insets = useSafeAreaInsets();
+  const { userId } = useUserContext();
 
   const [form, setForm] = useState({
     name: "",
@@ -38,9 +40,21 @@ export default function CreateWorkout({ navigation }) {
     setForm((prev) => ({ ...prev, [key]: value }));
 
   const handleAddExercises = async () => {
+    if (!userId) {
+      Alert.alert(
+        "Workout creation failed",
+        "You must be signed in to create a workout.",
+      );
+      return;
+    }
+
     setLoading(true);
+
     try {
-      const workout = await categoryApi.AddWorkout(form);
+      const workout = await categoryApi.AddWorkout({
+        ...form,
+        user_id: userId,
+      });
       navigation.navigate("CreateExercises", { workout });
     } catch (error) {
       Alert.alert(
