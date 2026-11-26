@@ -15,6 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import FormField from "../components/FormField";
 import { exerciseApi } from "../backend";
+import { useUserContext } from "../context/context";
 
 const BG = "#170f0c";
 const ACCENT = "#d98f6b";
@@ -29,6 +30,7 @@ const EMPTY_FORM = {
 export default function CreateExercises({ route, navigation }) {
   const insets = useSafeAreaInsets();
   const workout = route?.params?.workout;
+  const { userId } = useUserContext();
 
   const [form, setForm] = useState(EMPTY_FORM);
   const [loading, setLoading] = useState(false);
@@ -37,9 +39,20 @@ export default function CreateExercises({ route, navigation }) {
     setForm((prev) => ({ ...prev, [key]: value }));
 
   const handleAddExercise = async () => {
+    if (!userId) {
+      Alert.alert(
+        "Exercise could not be added",
+        "You must be signed in to add an exercise.",
+      );
+      return;
+    }
+
     setLoading(true);
     try {
-      await exerciseApi.AddExercises(workout.id, form);
+      await exerciseApi.AddExercises(workout.id, {
+        ...form,
+        user_id: userId,
+      });
       setForm({ ...EMPTY_FORM });
     } catch (error) {
       Alert.alert(
@@ -54,7 +67,7 @@ export default function CreateExercises({ route, navigation }) {
   const handleSaveWorkout = () => {
     navigation.reset({
       index: 0,
-      routes: [{ name: "Home" }],
+      routes: [{ name: "MainTabs", screen: "Workout" }],
     });
   };
 
