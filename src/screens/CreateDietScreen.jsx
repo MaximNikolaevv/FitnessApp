@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  Alert,
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
@@ -14,6 +15,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { dietApi } from "../backend";
+import { useUserContext } from "../context/context";
 
 const BG = "#170f0c";
 const ACCENT = "#d98f6b";
@@ -61,8 +63,9 @@ function Field({
   );
 }
 
-export default function CreateDiet() {
+export default function CreateDiet({ navigation }) {
   const insets = useSafeAreaInsets();
+  const { userId } = useUserContext();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     food: "",
@@ -76,13 +79,19 @@ export default function CreateDiet() {
     setForm((prev) => ({ ...prev, [key]: value }));
 
   const handleSubmit = async () => {
+    if (!userId) {
+      Alert.alert("Error", "You must be signed in to create a diet entry.");
+      return;
+    }
+
     try {
       setLoading(true);
-      await dietApi.AddDiet(form);
+      await dietApi.AddDiet({ ...form, user_id: userId });
     } catch (error) {
       Alert.alert("Error", error.response?.data?.message ?? error.message);
     } finally {
       setLoading(false);
+      navigation.navigate("MainTabs", { screen: "Diet" });
     }
 
     console.log("Create diet", form);
